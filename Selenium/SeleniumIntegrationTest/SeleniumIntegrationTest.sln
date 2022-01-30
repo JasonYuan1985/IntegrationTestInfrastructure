@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeleniumIntegrationTest", "SeleniumIntegrationTest\SeleniumIntegrationTest.csproj", "{616F1FEB-7DDB-4457-A25F-3E6A8231F7B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeleniumIntegrationTest", "SeleniumIntegrationTest\SeleniumIntegrationTest.csproj", "{616F1FEB-7DDB-4457-A25F-3E6A8231F7B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationAutomation", "IntegrationAutomation\IntegrationAutomation.csproj", "{84A20A96-2792-446B-A10F-8021654AE911}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationAutomationTest", "IntegrationAutomationTest\IntegrationAutomationTest.csproj", "{A9C7856D-ABC3-4067-8D8C-06DEF2043296}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{616F1FEB-7DDB-4457-A25F-3E6A8231F7B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{616F1FEB-7DDB-4457-A25F-3E6A8231F7B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{616F1FEB-7DDB-4457-A25F-3E6A8231F7B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84A20A96-2792-446B-A10F-8021654AE911}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84A20A96-2792-446B-A10F-8021654AE911}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84A20A96-2792-446B-A10F-8021654AE911}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84A20A96-2792-446B-A10F-8021654AE911}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9C7856D-ABC3-4067-8D8C-06DEF2043296}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9C7856D-ABC3-4067-8D8C-06DEF2043296}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9C7856D-ABC3-4067-8D8C-06DEF2043296}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9C7856D-ABC3-4067-8D8C-06DEF2043296}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
