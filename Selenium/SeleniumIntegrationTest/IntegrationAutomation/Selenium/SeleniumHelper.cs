@@ -21,7 +21,9 @@ namespace IntegrationAutomation.Selenium
                     switch (browserName)
                     {
                         case "Chrome":
-                            driver = new ChromeDriver(@"C:\D\chromedriver_win32");
+                            ChromeOptions options = new ChromeOptions();
+                            options.AcceptInsecureCertificates = true;
+                            driver = new ChromeDriver(@"C:\D\chromedriver_win32", options);
                             break;
                         default:
                             throw new ArgumentException("Not inplement browser name");
