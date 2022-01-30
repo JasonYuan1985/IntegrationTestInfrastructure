@@ -13,7 +13,8 @@ namespace IntegrationAutomationTest
         {
             List<ActionRowEntity> rows = new List<ActionRowEntity>();
             Mock<OperationInterface> seleniumOperator = new Mock<OperationInterface>();
-            IntegrationAutomationOperation operation = new IntegrationAutomationOperation(seleniumOperator.Object);
+            Mock<OperationInterface> excelOperator = new Mock<OperationInterface>();
+            IntegrationAutomationOperation operation = new IntegrationAutomationOperation(seleniumOperator.Object, excelOperator.Object);
             var result = operation.PerformActions(rows);
             Assert.True(result.Where(c => c.IsSuccess).GroupBy(d => d.ScenarioName).Select(e => e.Key).ToList<string>().Count == 0);
         }
@@ -25,7 +26,8 @@ namespace IntegrationAutomationTest
             rows.Add(new ActionRowEntity() { ScenarioName = "1", FrameworkName = "Selenium", CommandComponent = "test" });
 
             Mock<OperationInterface> seleniumOperator = new Mock<OperationInterface>();
-            IntegrationAutomationOperation operation = new IntegrationAutomationOperation(seleniumOperator.Object);
+            Mock<OperationInterface> excelOperator = new Mock<OperationInterface>();
+            IntegrationAutomationOperation operation = new IntegrationAutomationOperation(seleniumOperator.Object, excelOperator.Object);
             var result = operation.PerformActions(rows);
             Assert.True(result.Where(c=> c.IsSuccess).GroupBy(d => d.ScenarioName).Select(e=>e.Key).ToList<string>().Count == 1);
         }
@@ -38,7 +40,8 @@ namespace IntegrationAutomationTest
             rows.Add(new ActionRowEntity() { ScenarioName = "2", CommandComponent = "test" });
 
             Mock<OperationInterface> seleniumOperator = new Mock<OperationInterface>();
-            IntegrationAutomationOperation operation = new IntegrationAutomationOperation(seleniumOperator.Object);
+            Mock<OperationInterface> excelOperator = new Mock<OperationInterface>();
+            IntegrationAutomationOperation operation = new IntegrationAutomationOperation(seleniumOperator.Object, excelOperator.Object);
             var result = operation.PerformActions(rows);
             Assert.True(result.Where(c => c.IsSuccess).GroupBy(d => d.ScenarioName).Select(e => e.Key).ToList<string>().Count == 2);
         }
@@ -52,7 +55,8 @@ namespace IntegrationAutomationTest
 
             Mock<OperationInterface> seleniumOperator = new Mock<OperationInterface>();
             seleniumOperator.Setup(c => c.PerforAction(It.Is<ActionRowEntity>(d => d.ScenarioName == "2"))).Throws(new System.Exception());
-            IntegrationAutomationOperation operation = new IntegrationAutomationOperation(seleniumOperator.Object);
+            Mock<OperationInterface> excelOperator = new Mock<OperationInterface>();
+            IntegrationAutomationOperation operation = new IntegrationAutomationOperation(seleniumOperator.Object, excelOperator.Object);
             var result = operation.PerformActions(rows);
             Assert.True(result.Where(c => c.IsSuccess).GroupBy(d => d.ScenarioName).Select(e => e.Key).ToList<string>().Count == 1);
         }

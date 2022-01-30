@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace IntegrationAutomation
 {
-    public interface OperationInterface
+    public interface ILog
     {
-        void PerforAction(ActionRowEntity action);
-        void WaitTime(string time);
+        public void Log(string message);
     }
 }

@@ -1,15 +1,19 @@
-﻿using IntegrationAutomation.Selenium;
+﻿using IntegrationAutomation.Excel;
+using IntegrationAutomation.Selenium;
 using System.Data;
 
 namespace IntegrationAutomation
 {
     public class IntegrationAutomationOperation
     {
-        OperationInterface SeleniumOperator {get;set;}
-        public IntegrationAutomationOperation(OperationInterface seleniumOperator)
+        OperationInterface _seleniumOperator { get; set; }
+        OperationInterface _excelOperator { get; set; }
+        public IntegrationAutomationOperation(OperationInterface seleniumOperator, OperationInterface excelOperator)
         {
-            SeleniumOperator = seleniumOperator;
+            _seleniumOperator = seleniumOperator;
+            _excelOperator = excelOperator;
         }
+
         public List<ActionRowEntity> GetActionRowEntities(DataTable dateTable)
         {
             var result = new List<ActionRowEntity>();
@@ -19,6 +23,7 @@ namespace IntegrationAutomation
                 actionRowEntity.ScenarioName = rowEntity["Scenario"].ToString();
                 actionRowEntity.FrameworkName = rowEntity["Framework"].ToString();
                 actionRowEntity.CommandName = rowEntity["Command Name"].ToString();
+                actionRowEntity.CommandType = rowEntity["Command Type"].ToString();
                 actionRowEntity.CommandComponent = rowEntity["Command Component"].ToString();
                 actionRowEntity.CommandValue = rowEntity["Command Value"].ToString();
                 actionRowEntity.WaitTime = rowEntity["Wait Time"].ToString();
@@ -37,6 +42,7 @@ namespace IntegrationAutomation
                     "Scenario",
                     "Framework",
                     "Command Name",
+                    "Command Type",
                     "Command Component",
                     "Command Value",
                     "Wait Time"
@@ -59,7 +65,7 @@ namespace IntegrationAutomation
         public List<ActionRowEntity> PerformActions(List<ActionRowEntity> entities)
         {
             List<string> scenarioNames = entities.Select(c => c.ScenarioName).Distinct().ToList();
-            foreach(var scenarioName in scenarioNames)
+            foreach (var scenarioName in scenarioNames)
             {
                 var scenarioEntities = entities.Where(c => c.ScenarioName == scenarioName);
                 try
@@ -68,19 +74,26 @@ namespace IntegrationAutomation
                     {
                         if (entity.FrameworkName == "Selenium")
                         {
-                            if (SeleniumOperator == null)
+                            if (_seleniumOperator == null)
                             {
-                                SeleniumOperator = new SeleniumHelper();
+                                _seleniumOperator = new SeleniumHelper(new TxtLogWriter());
                             }
-                            SeleniumOperator.PerforAction(entity);
+                            _seleniumOperator.PerforAction(entity);
                         }
-
+                        else if(entity.FrameworkName == "Excel")
+                        {
+                            if (_excelOperator == null)
+                            {
+                                _excelOperator = new ExcelHelper(new TxtLogWriter());
+                            }
+                            _excelOperator.PerforAction(entity);
+                        }
                         entity.IsSuccess = true;
                     }
                 }
                 catch (Exception ex)
                 {
-                    scenarioEntities.ToList().ForEach(c=>c.IsSuccess = false);
+                    scenarioEntities.ToList().ForEach(c => c.IsSuccess = false);
                 }
             }
 
