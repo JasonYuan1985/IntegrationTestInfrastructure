@@ -4,7 +4,7 @@ using System.Data;
 
 ExcelReader excelReader = new ExcelReader();
 string activeSheetName;
-string excelFileName = @"C:\Users\Jason_Yuan\Downloads\integration test import template.xlsx";
+string excelFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "integration test import template.xlsx");
 DataSet dataSet = excelReader.ExcelToDataSet(excelFileName, "", 0, out activeSheetName);
 DataTable dataTable = dataSet.Tables[0];
 //convert to ActionRowEntity
