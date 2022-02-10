@@ -55,7 +55,7 @@ namespace IntegrationAutomation.Excel
             catch (Exception ex)
             {
                 _log.Log("Exception:" + ex.ToString());
-                throw new Exception(ex.ToString());
+                throw new Exception(action.ToString() + "\r\n" + ex.ToString());
             }
 
             WaitTime(action.WaitTime);

@@ -9,11 +9,13 @@ namespace IntegrationAutomation
         OperationInterface _seleniumOperator { get; set; }
         OperationInterface _excelOperator { get; set; }
         OperationInterface _systemOperator { get; set; }
+        ILog _log;
         public IntegrationAutomationOperation(OperationInterface seleniumOperator, OperationInterface excelOperator, OperationInterface systemOperator)
         {
             _seleniumOperator = seleniumOperator;
             _excelOperator = excelOperator;
             _systemOperator = systemOperator;
+            _log = new TxtLogWriter();
         }
 
         public List<ActionRowEntity> GetActionRowEntities(DataTable dateTable)
@@ -102,9 +104,11 @@ namespace IntegrationAutomation
                         }
                         entity.IsSuccess = true;
                     }
+                    _log.WriteResult(scenarioName + ",Success");
                 }
                 catch (Exception ex)
                 {
+                    _log.WriteResult(scenarioName + ",Fail:" + ex.ToString());
                     scenarioEntities.ToList().ForEach(c => c.IsSuccess = false);
                 }
             }

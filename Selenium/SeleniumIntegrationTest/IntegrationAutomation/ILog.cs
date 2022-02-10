@@ -9,5 +9,6 @@ namespace IntegrationAutomation
     public interface ILog
     {
         public void Log(string message);
+        public void WriteResult(string message);
     }
 }
