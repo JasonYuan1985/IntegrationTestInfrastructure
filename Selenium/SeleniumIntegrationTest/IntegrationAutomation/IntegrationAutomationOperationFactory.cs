@@ -14,7 +14,8 @@ namespace IntegrationAutomation
         {
             OperationInterface operationInterface = new SeleniumHelper(new TxtLogWriter());
             OperationInterface excelInterface = new ExcelHelper(new TxtLogWriter());
-            return new IntegrationAutomationOperation(operationInterface, excelInterface);
+            OperationInterface systemInterface = new SystemHelper(new TxtLogWriter());
+            return new IntegrationAutomationOperation(operationInterface, excelInterface, systemInterface);
         }
     }
 }

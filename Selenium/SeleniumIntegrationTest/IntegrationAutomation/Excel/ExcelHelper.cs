@@ -21,10 +21,10 @@ namespace IntegrationAutomation.Excel
             _log.Log("Before Action: " + action.ToString());
             try
             {
+                var commandType = action.CommandType;
                 switch (action.CommandName)
                 {
                     case "Compare File":
-                        var commandType = action.CommandType;
                         if(commandType == "Last Modified File")
                         {
                             string originalFile = action.CommandValue;
@@ -35,10 +35,21 @@ namespace IntegrationAutomation.Excel
                                 throw new ArgumentException("Two files are different:\r\n" + originalFile + "\r\n" + compareFile);
                             }
                         }
-
+                        break;
+                    case "Compare File With Rearrange":
+                        if(commandType == "Last Modified File")
+                        {
+                            string originalFile = action.CommandValue;
+                            string compareFile = GetLastModifiedFile(action.CommandComponent);
+                            bool result = CompareFile(originalFile, compareFile, true);
+                            if(!result)
+                            {
+                                throw new ArgumentException("Two files are different:\r\n" + originalFile + "\r\n" + compareFile);
+                            }
+                        }
                         break;
                     default:
-                        throw new ArgumentException("Command Type is not implemented");
+                        throw new ArgumentException("Command Name is not implemented");
                 }
             }
             catch (Exception ex)
@@ -92,7 +103,7 @@ namespace IntegrationAutomation.Excel
             return files.FirstOrDefault();
         }
 
-        private bool CompareFile(string originalFile, string compareFile)
+        private bool CompareFile(string originalFile, string compareFile, bool rearrange = false)
         {
             ExcelReader reader = new ExcelReader();
             string originalFileActiveSheetName = "";
@@ -102,13 +113,38 @@ namespace IntegrationAutomation.Excel
             var dsOriginalFile = reader.ExcelToDataSet(originalFile, "", -1, out originalFileActiveSheetName);
             var dsCompareFile = reader.ExcelToDataSet(compareFile, "", -1, out compareFileActiveSheetName);
 
-            return CompareDataTable(dsOriginalFile.Tables[0], dsCompareFile.Tables[0]);
+            var originalDt = dsOriginalFile.Tables[0];
+            var compareDt = dsCompareFile.Tables[0];
+            if (rearrange)
+            {
+                originalDt = ReArrangeTable(originalDt);
+                compareDt = ReArrangeTable(compareDt);
+            }
+
+            return CompareDataTable(originalDt, compareDt);
         }
 
         private string CleanString(string originalString)
         {
             var regex = new Regex(@"[\p{Cc}\p{Cf}\p{Mn}\p{Me}\p{Zl}\p{Zp}]");
             return regex.Replace(originalString, "");
+        }
+
+        private DataTable ReArrangeTable(DataTable locationTable)
+        {
+            // Create DataView
+            DataView view = new DataView(locationTable);
+
+            // Sort by column in asc order
+            var sortColumnString = string.Empty;
+            foreach (var columnName in locationTable.Columns)
+            {
+                sortColumnString += columnName + " ASC,";
+            }
+            sortColumnString = sortColumnString.TrimEnd(',');
+
+            view.Sort = sortColumnString;
+            return view.ToTable();
         }
     }
 }

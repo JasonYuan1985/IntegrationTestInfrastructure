@@ -8,10 +8,12 @@ namespace IntegrationAutomation
     {
         OperationInterface _seleniumOperator { get; set; }
         OperationInterface _excelOperator { get; set; }
-        public IntegrationAutomationOperation(OperationInterface seleniumOperator, OperationInterface excelOperator)
+        OperationInterface _systemOperator { get; set; }
+        public IntegrationAutomationOperation(OperationInterface seleniumOperator, OperationInterface excelOperator, OperationInterface systemOperator)
         {
             _seleniumOperator = seleniumOperator;
             _excelOperator = excelOperator;
+            _systemOperator = systemOperator;
         }
 
         public List<ActionRowEntity> GetActionRowEntities(DataTable dateTable)
@@ -27,6 +29,7 @@ namespace IntegrationAutomation
                 actionRowEntity.CommandComponent = rowEntity["Command Component"].ToString();
                 actionRowEntity.CommandValue = rowEntity["Command Value"].ToString();
                 actionRowEntity.WaitTime = rowEntity["Wait Time"].ToString();
+                actionRowEntity.ActionDisabled = rowEntity["Action Disabled"].ToString() == "Y";
                 result.Add(actionRowEntity);
             }
 
@@ -45,7 +48,8 @@ namespace IntegrationAutomation
                     "Command Type",
                     "Command Component",
                     "Command Value",
-                    "Wait Time"
+                    "Wait Time",
+                    "Action Disabled"
                 };
             }
         }
@@ -67,7 +71,7 @@ namespace IntegrationAutomation
             List<string> scenarioNames = entities.Select(c => c.ScenarioName).Distinct().ToList();
             foreach (var scenarioName in scenarioNames)
             {
-                var scenarioEntities = entities.Where(c => c.ScenarioName == scenarioName);
+                var scenarioEntities = entities.Where(c => c.ScenarioName == scenarioName && !c.ActionDisabled);
                 try
                 {
                     foreach (ActionRowEntity entity in scenarioEntities)
@@ -87,6 +91,14 @@ namespace IntegrationAutomation
                                 _excelOperator = new ExcelHelper(new TxtLogWriter());
                             }
                             _excelOperator.PerforAction(entity);
+                        }
+                        else if(entity.FrameworkName == "System")
+                        {
+                            if (_systemOperator == null)
+                            {
+                                _systemOperator = new SystemHelper(new TxtLogWriter());
+                            }
+                            _systemOperator.PerforAction(entity);
                         }
                         entity.IsSuccess = true;
                     }

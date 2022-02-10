@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 using System.Drawing;
 
 namespace IntegrationAutomation.Selenium
@@ -61,8 +62,12 @@ namespace IntegrationAutomation.Selenium
                     case "Click":
                         driver.FindElement(by).Click();
                         break;
+                    case "SendKeys":
+                        Actions keyAction = new Actions(driver);
+                        keyAction.SendKeys(OpenQA.Selenium.Keys.Enter).Build().Perform();
+                        break;
                     default:
-                        throw new ArgumentException("Command Type is not implemented");
+                        throw new ArgumentException("Command Name is not implemented");
                 }
             }
             catch (Exception ex)
