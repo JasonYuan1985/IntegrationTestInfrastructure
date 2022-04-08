@@ -9,9 +9,11 @@ namespace IntegrationAutomation.Selenium
     {
         WebDriver driver;
         ILog _log { get; set; }
-        public SeleniumHelper(ILog log)
+        string _chromeDriverPath { get; set; }
+        public SeleniumHelper(ILog log, string chromeDriverPath)
         {
             _log = log;
+            _chromeDriverPath = chromeDriverPath;
         }
 
         public void PerforAction(ActionRowEntity action)
@@ -44,7 +46,7 @@ namespace IntegrationAutomation.Selenium
                             case "Chrome":
                                 ChromeOptions options = new ChromeOptions();
                                 options.AcceptInsecureCertificates = true;
-                                driver = new ChromeDriver(@"C:\D\chromedriver_win32", options);
+                                driver = new ChromeDriver(_chromeDriverPath, options);
                                 break;
                             default:
                                 throw new ArgumentException("Not inplement browser name");
@@ -93,6 +95,14 @@ namespace IntegrationAutomation.Selenium
                 {
                     throw new ArgumentException("Wait time is not an integer");
                 }
+            }
+        }
+
+        public void Close()
+        {
+            if (driver != null)
+            {
+                driver.Quit();
             }
         }
     }

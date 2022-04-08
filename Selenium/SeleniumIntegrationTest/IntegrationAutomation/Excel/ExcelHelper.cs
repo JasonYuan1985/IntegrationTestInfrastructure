@@ -146,5 +146,10 @@ namespace IntegrationAutomation.Excel
             view.Sort = sortColumnString;
             return view.ToTable();
         }
+
+        public void Close()
+        {
+            
+        }
     }
 }

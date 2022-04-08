@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace IntegrationAutomation
 {
-    public interface OperationInterface
+    public class AppSettingClass
     {
-        void PerforAction(ActionRowEntity action);
-        void WaitTime(string time);
-        void Close();
+        public string ExcelFileName { get; set; }
+        public string ChromeDriverFilePath { get; set; }
     }
 }

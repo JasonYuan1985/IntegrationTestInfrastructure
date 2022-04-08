@@ -18,6 +18,18 @@ namespace IntegrationAutomation
             _log = new TxtLogWriter();
         }
 
+        public bool CheckTemplate(DataTable dataTable)
+        {
+            foreach (var title in TemplateColumnNames)
+            {
+                if (!dataTable.Columns.Contains(title))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public List<ActionRowEntity> GetActionRowEntities(DataTable dateTable)
         {
             var result = new List<ActionRowEntity>();
@@ -38,36 +50,6 @@ namespace IntegrationAutomation
             return result;
         }
 
-        private List<string> TemplateColumnNames
-        {
-            get
-            {
-                return new List<string>()
-                {
-                    "Scenario",
-                    "Framework",
-                    "Command Name",
-                    "Command Type",
-                    "Command Component",
-                    "Command Value",
-                    "Wait Time",
-                    "Action Disabled"
-                };
-            }
-        }
-
-        public bool CheckTemplate(DataTable dataTable)
-        {
-            foreach (var title in TemplateColumnNames)
-            {
-                if (!dataTable.Columns.Contains(title))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
         public List<ActionRowEntity> PerformActions(List<ActionRowEntity> entities)
         {
             List<string> scenarioNames = entities.Select(c => c.ScenarioName).Distinct().ToList();
@@ -82,11 +64,11 @@ namespace IntegrationAutomation
                         {
                             if (_seleniumOperator == null)
                             {
-                                _seleniumOperator = new SeleniumHelper(new TxtLogWriter());
+                                _seleniumOperator = new SeleniumHelper(new TxtLogWriter(), "C:\\D\\chromedriver_win32");
                             }
                             _seleniumOperator.PerforAction(entity);
                         }
-                        else if(entity.FrameworkName == "Excel")
+                        else if (entity.FrameworkName == "Excel")
                         {
                             if (_excelOperator == null)
                             {
@@ -94,7 +76,7 @@ namespace IntegrationAutomation
                             }
                             _excelOperator.PerforAction(entity);
                         }
-                        else if(entity.FrameworkName == "System")
+                        else if (entity.FrameworkName == "System")
                         {
                             if (_systemOperator == null)
                             {
@@ -114,6 +96,29 @@ namespace IntegrationAutomation
             }
 
             return entities;
+        }
+
+        public void CloseAutomation()
+        {
+            _seleniumOperator.Close();
+        }
+
+        private List<string> TemplateColumnNames
+        {
+            get
+            {
+                return new List<string>()
+                {
+                    "Scenario",
+                    "Framework",
+                    "Command Name",
+                    "Command Type",
+                    "Command Component",
+                    "Command Value",
+                    "Wait Time",
+                    "Action Disabled"
+                };
+            }
         }
     }
 }

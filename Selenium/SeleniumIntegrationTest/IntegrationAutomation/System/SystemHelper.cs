@@ -58,5 +58,10 @@ namespace IntegrationAutomation.Selenium
                 }
             }
         }
+
+        public void Close()
+        {
+            
+        }
     }
 }
