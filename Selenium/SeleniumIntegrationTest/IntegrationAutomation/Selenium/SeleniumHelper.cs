@@ -19,7 +19,7 @@ namespace IntegrationAutomation.Selenium
         public void PerforAction(ActionRowEntity action)
         {
             _log.Log("Before Action: " + action.ToString());
-
+            bool needWaitTime = true;
             try
             {
 
@@ -68,6 +68,11 @@ namespace IntegrationAutomation.Selenium
                         Actions keyAction = new Actions(driver);
                         keyAction.SendKeys(OpenQA.Selenium.Keys.Enter).Build().Perform();
                         break;
+                    case "GetValue":
+                        bool result = IsTargetValueEqualToElement(driver, by, action.CommandValue, action.WaitTime);
+                        needWaitTime = false;
+                        if (!result) throw new ArgumentException("Not found value");
+                        break;
                     default:
                         throw new ArgumentException("Command Name is not implemented");
                 }
@@ -78,7 +83,7 @@ namespace IntegrationAutomation.Selenium
                 throw new Exception(action.ToString() + "\r\n" + ex.ToString());
             }
 
-            WaitTime(action.WaitTime);
+            if (needWaitTime) WaitTime(action.WaitTime);
         }
 
         public void WaitTime(string time)
@@ -104,6 +109,38 @@ namespace IntegrationAutomation.Selenium
             {
                 driver.Quit();
             }
+        }
+
+        private bool IsTargetValueEqualToElement(WebDriver driver, By byPath, string value, string maxWaitTime)
+        {
+            try
+            {
+                //3秒钟做获取alert的内容
+                var labelText = GetText(driver.FindElement(byPath));
+                int eachWaitTime = 1000;
+                int totalWaitTime = 0;
+                int maxWaitTimeInteger = string.IsNullOrEmpty(maxWaitTime) ? 0 : Convert.ToInt32(maxWaitTime);
+                //每秒获取一次
+                while (labelText != value && totalWaitTime < maxWaitTimeInteger * 1000)
+                {
+                    Thread.Sleep(eachWaitTime);
+                    totalWaitTime += eachWaitTime;
+                    labelText = GetText(driver.FindElement(byPath));
+                }
+
+                return labelText == value;
+            }
+            catch (Exception ex)
+            {
+                _log.Log("查找文件报错:" + ex.ToString());
+                return false;
+            }
+        }
+
+        private string GetText(IWebElement webElement)
+        {
+            _log.Log("Text:" + webElement.ToString());
+            return webElement.Text;
         }
     }
 }
